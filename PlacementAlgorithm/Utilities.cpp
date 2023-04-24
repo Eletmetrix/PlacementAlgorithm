@@ -81,7 +81,7 @@ Rectangle CalculatedAreaList::GetPlacedArea() const
     return Rectangle(width, height);
 }
 
-void Rectangle::CalculatePossibilities(std::vector<Rectangle*>& AllAreas)
+void Rectangle::CalculatePossibilities(std::vector<Rectangle*> const AllAreas)
 {
     for (auto Area : AllAreas)
     {
@@ -93,7 +93,7 @@ void Rectangle::CalculatePossibilities(std::vector<Rectangle*>& AllAreas)
         uint16_t areaHeight = Area->GetHeight();
         uint16_t areaWidth = Area->GetWidth();
 
-        if (areaHeight == height || areaWidth == width || areaHeight == height || areaWidth == width)
+        if (areaHeight == height || areaWidth == width || areaWidth == height || areaHeight == width)
         {
             Possibilities.push_back(Area);
         }
@@ -123,6 +123,17 @@ std::vector<Rectangle*> Rectangle::GetPossibilities() const
 std::string Rectangle::toString() const
 {
     return std::to_string(width) + "x" + std::to_string(height);
+}
+
+std::vector<Rectangle*> RectanglesList::GetRectangleList() const
+{
+    std::vector<Rectangle*> List;
+    for (auto it = begin(); it != end(); ++it)
+    {
+        List.push_back(it->GetRectangle());
+    }
+
+    return List;
 }
 
 void PreservedArea::NewHeight(uint16_t newHeight)

@@ -11,7 +11,7 @@ public:
         : width(X), height(Y)
     { }
 
-    void CalculatePossibilities(std::vector<Rectangle*>& AllAreas);
+    void CalculatePossibilities(std::vector<Rectangle*> const AllAreas);
 
     virtual uint16_t GetWidth() const;
     virtual uint16_t GetHeight() const;
@@ -26,11 +26,43 @@ protected:
     std::vector<Rectangle*> Possibilities;
 };
 
+class AmountOfRectangle 
+{
+public:
+    AmountOfRectangle(uint8_t Amount, Rectangle* Rectangle)
+        : _Amount(Amount), _Rect(Rectangle)
+    { }
+
+    virtual uint8_t GetAmount() const
+    {
+        return _Amount;
+    }
+
+    virtual Rectangle* GetRectangle() const
+    {
+        return _Rect;
+    }
+
+protected:
+    uint8_t _Amount;
+    Rectangle* _Rect;
+};
+
+class RectanglesList : public std::vector<AmountOfRectangle>
+{
+public:
+    RectanglesList(std::initializer_list<AmountOfRectangle> Initializer)
+        : std::vector<AmountOfRectangle>(Initializer)
+    { }
+
+    virtual std::vector<Rectangle*> GetRectangleList() const;
+};
+
 struct SortAreasDescending
 {
-    bool operator()(Rectangle* const a, Rectangle* const b) const
+    bool operator()(const AmountOfRectangle& a, const AmountOfRectangle& b) const
     {
-        return a->GetArea() > b->GetArea();
+        return a.GetRectangle()->GetArea() > b.GetRectangle()->GetArea();
     }
 };
 

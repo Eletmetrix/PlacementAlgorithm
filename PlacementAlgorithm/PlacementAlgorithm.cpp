@@ -11,10 +11,11 @@ static uint8_t bigAreaHeight = 250;
 
 int main()
 {
-    std::vector<Rectangle*> Areas;
-    Areas.push_back(new Rectangle(30, 20));
-    Areas.push_back(new Rectangle(60, 30));
-    Areas.push_back(new Rectangle(45, 20));
+    RectanglesList Areas({
+        AmountOfRectangle(10, new Rectangle(30, 20)),
+        AmountOfRectangle(4, new Rectangle(60, 30)),
+        AmountOfRectangle(6, new Rectangle(45, 20)),
+    });
 
     CalculatedAreaList calculatedArea(minEdgeWidth - 1, minEdgeHeight - 1, bigAreaWidth, bigAreaHeight);
 
@@ -23,7 +24,7 @@ int main()
 
         for (auto Area : Areas)
         {
-            SmallAreasTotalSize += Area->GetArea();
+            SmallAreasTotalSize += Area.GetRectangle()->GetArea();
             if (SmallAreasTotalSize > calculatedArea.GetArea())
             {
                 std::cout << "Big area size is smaller than total small area sizes. This is not allowed!" << std::endl;
@@ -36,8 +37,18 @@ int main()
 
     for (auto Area : Areas)
     {
-        Area->CalculatePossibilities(Areas);
+        Area.GetRectangle()->CalculatePossibilities(Areas.GetRectangleList());
     }
 
-    std::cout << calculatedArea.GetPlacedArea().toString();
+    for (auto Area : Areas)
+    {
+        std::cout << Area.GetRectangle()->toString() << ":" << std::endl;
+
+        for (auto Possibility : Area.GetRectangle()->GetPossibilities())
+        {
+            std::cout << Possibility->toString() << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
 }
