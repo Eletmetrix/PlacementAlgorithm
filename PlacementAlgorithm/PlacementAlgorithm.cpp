@@ -35,12 +35,12 @@ int main()
 
     std::sort(Areas.begin(), Areas.end(), SortAreasDescending());
 
-    for (auto Area : Areas)
+    for (auto& Area : Areas)
     {
         Area.GetRectangle()->CalculatePossibilities(Areas.GetRectangleList());
     }
 
-    for (auto Area : Areas)
+    for (auto& Area : Areas)
     {
         std::cout << Area.GetRectangle()->toString() << ":" << std::endl;
 
