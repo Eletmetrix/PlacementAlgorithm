@@ -1,5 +1,7 @@
 #include "Utilities.h"
 
+#include <cmath>
+
 CalculatedArea::CalculatedArea(uint8_t col_count, uint16_t TotalHeight)
     : std::vector<Rectangle*>(col_count)
     , totalHeight(TotalHeight)
@@ -21,10 +23,31 @@ uint16_t CalculatedArea::GetPreservedAreaHeight() const
     PreservedArea* CastedArea = dynamic_cast<PreservedArea*>(this->back());
     if (CastedArea != nullptr)
     {
-        return CastedArea->GetLength();
+        return CastedArea->GetHeight();
     }
 
     return 0;
+}
+
+uint16_t CalculatedArea::GetAreaWidth() const
+{
+    if (!IsThereAnyArea())
+    {
+        return 0;
+    }
+
+    return this->at(0)->GetWidth();
+}
+
+bool CalculatedArea::IsThereAnyArea() const
+{
+    PreservedArea* CastedArea = dynamic_cast<PreservedArea*>(this->back());
+    if (CastedArea != nullptr)
+    {
+        return CastedArea->GetHeight() < totalHeight;
+    }
+
+    return true;
 }
 
 uint32_t CalculatedAreaList::GetArea() const
@@ -42,6 +65,22 @@ uint16_t CalculatedAreaList::GetPreservedAreaHeightAtCol(uint8_t col) const
     return this->at(col).GetPreservedAreaHeight();
 }
 
+Rectangle CalculatedAreaList::GetPlacedArea() const
+{
+    uint16_t width = 0, height = 0;
+    for (auto it = this->begin(); it != this->end(); ++it)
+    {
+        if (it->IsThereAnyArea())
+        {
+            width += it->GetAreaWidth();
+        }
+
+        height = fmax(totalHeight - it->GetPreservedAreaHeight(), height);
+    }
+
+    return Rectangle(width, height);
+}
+
 void Rectangle::CalculatePossibilities(std::vector<Rectangle*>& AllAreas)
 {
     for (auto Area : AllAreas)
@@ -51,24 +90,29 @@ void Rectangle::CalculatePossibilities(std::vector<Rectangle*>& AllAreas)
             continue;
         }
 
-        uint16_t areaLength1 = Area->GetLength(false);
-        uint16_t areaLength2 = Area->GetLength(true);
+        uint16_t areaHeight = Area->GetHeight();
+        uint16_t areaWidth = Area->GetWidth();
 
-        if (areaLength1 == length1 || areaLength2 == length2 || areaLength1 == length2 || areaLength2 == length1)
+        if (areaHeight == height || areaWidth == width || areaHeight == height || areaWidth == width)
         {
             Possibilities.push_back(Area);
         }
     }
 }
 
-uint16_t Rectangle::GetLength(const bool FirstOne) const
+uint16_t Rectangle::GetHeight() const
 {
-    return FirstOne ? length1 : length2;
+    return height;
+}
+
+uint16_t Rectangle::GetWidth() const
+{
+    return width;
 }
 
 uint32_t Rectangle::GetArea() const
 {
-    return length1 * length2;
+    return height * width;
 }
 
 std::vector<Rectangle*> Rectangle::GetPossibilities() const
@@ -78,12 +122,7 @@ std::vector<Rectangle*> Rectangle::GetPossibilities() const
 
 std::string Rectangle::toString() const
 {
-    return std::to_string(length1) + "x" + std::to_string(length2);
-}
-
-uint16_t PreservedArea::GetLength(const bool FirstOne) const
-{
-    return height;
+    return std::to_string(width) + "x" + std::to_string(height);
 }
 
 void PreservedArea::NewHeight(uint16_t newHeight)

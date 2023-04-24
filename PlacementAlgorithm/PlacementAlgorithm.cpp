@@ -39,6 +39,5 @@ int main()
         Area->CalculatePossibilities(Areas);
     }
 
-    std::cout << "my_area size: " << calculatedArea.size() << "x" << calculatedArea[0].size() << std::endl;
-    std::cout << calculatedArea.GetPreservedAreaHeightAtCol(0);
+    std::cout << calculatedArea.GetPlacedArea().toString();
 }

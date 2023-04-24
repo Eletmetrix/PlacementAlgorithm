@@ -8,19 +8,20 @@ class Rectangle
 {
 public:
     Rectangle(uint16_t X, uint16_t Y)
-        : length1(X), length2(Y)
+        : width(X), height(Y)
     { }
 
     void CalculatePossibilities(std::vector<Rectangle*>& AllAreas);
 
-    virtual uint16_t GetLength(const bool FirstOne) const;
+    virtual uint16_t GetWidth() const;
+    virtual uint16_t GetHeight() const;
     virtual uint32_t GetArea() const;
     virtual std::vector<Rectangle*> GetPossibilities() const;
     virtual std::string toString() const;
 
-private:
-    uint16_t length1;
-    uint16_t length2;
+protected:
+    uint16_t height;
+    uint16_t width;
 
     std::vector<Rectangle*> Possibilities;
 };
@@ -37,15 +38,10 @@ class PreservedArea : public Rectangle
 {
 public:
     PreservedArea(uint16_t Height)
-        : height(Height)
-        , Rectangle(0, Height)
+        : Rectangle(0, Height)
     { }
 
-    virtual uint16_t GetLength(const bool FirstOne = false) const override;
     virtual void NewHeight(uint16_t newHeight);
-
-private:
-    uint16_t height;
 };
 
 class CalculatedArea : public std::vector<Rectangle*>
@@ -54,6 +50,8 @@ public:
     CalculatedArea(uint8_t col_count, uint16_t TotalWidth);
 
     virtual uint16_t GetPreservedAreaHeight() const;
+    virtual uint16_t GetAreaWidth() const;
+    virtual bool IsThereAnyArea() const;
 
 private:
     uint16_t totalHeight;
@@ -70,6 +68,7 @@ public:
 
     virtual uint32_t GetArea() const;
     virtual uint16_t GetPreservedAreaHeightAtCol(uint8_t col) const;
+    virtual Rectangle GetPlacedArea() const;
 
 private:
     uint16_t totalWidth;
