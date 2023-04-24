@@ -11,14 +11,18 @@ static uint8_t bigAreaHeight = 250;
 
 int main()
 {
+    // Add new small areas to our list.
     RectanglesList Areas({
         AmountOfRectangle(10, new Rectangle(30, 20)),
         AmountOfRectangle(4, new Rectangle(60, 30)),
         AmountOfRectangle(6, new Rectangle(45, 20)),
     });
 
+    // Create big area.
     CalculatedAreaList calculatedArea(minEdgeWidth - 1, minEdgeHeight - 1, bigAreaWidth, bigAreaHeight);
 
+    // If big area is smaller than small areas total, don't continue
+    // because all small areas can't fit in.
     {
         uint32_t SmallAreasTotalSize = 0;
 
@@ -33,22 +37,14 @@ int main()
         }
     }
 
+    // Sort small areas as descending.
     std::sort(Areas.begin(), Areas.end(), SortAreasDescending());
 
+    // Calculate possibilities.
     for (auto& Area : Areas)
     {
         Area.GetRectangle()->CalculatePossibilities(Areas.GetRectangleList());
     }
 
-    for (auto& Area : Areas)
-    {
-        std::cout << Area.GetRectangle()->toString() << ":" << std::endl;
-
-        for (auto Possibility : Area.GetRectangle()->GetPossibilities())
-        {
-            std::cout << Possibility->toString() << std::endl;
-        }
-
-        std::cout << std::endl;
-    }
+    // Now let's start. Place first element from our list to area.
 }
